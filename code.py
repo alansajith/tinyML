@@ -12,7 +12,7 @@
 #include "DHT.h"
 
 // --- STEP 1: WI-FI SETUP ---
-const char* ssid     = "NSUT-Campus";
+const char* ssid     = "NSUT-Campus";   
 const char* password = "";
 
 // --- STEP 2: LIBRARY SETUP ---#include <Your_Project_Name_Inferencing.h> 
@@ -34,23 +34,59 @@ String statusColor = "black";
 
 // HTML Code for the webpage
 void handleRoot() {
-  String html = "<!DOCTYPE html><html>";
-  html += "<head><meta http-equiv='refresh' content='3'>"; // Auto-refresh every 3 sec
-  html += "<style>body{font-family: sans-serif; text-align: center; margin-top: 50px;}";
-  html += "h1{font-size: 50px;} .value{font-size: 30px; color: #555;}</style></head>";
+  String html = "<!DOCTYPE html><html lang='en'>";
+  html += "<head>";
+  html += "<meta charset='UTF-8'>";
+  html += "<meta name='viewport' content='width=device-width, initial-scale=1.0'>";
+  html += "<meta http-equiv='refresh' content='3'>";
+  html += "<title>Smart Air Quality Monitor</title>";
+
+  html += "<style>";
+  html += "body{margin:0;font-family:'Segoe UI',sans-serif;background:#f4f6f8;}";
+  html += ".container{max-width:900px;margin:auto;padding:20px;}";
+  html += "h1{text-align:center;margin-bottom:10px;}";
+  html += ".status{padding:30px;border-radius:15px;color:white;text-align:center;font-size:42px;font-weight:bold;}";
+  html += ".grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;margin-top:30px;}";
+  html += ".card{background:white;padding:20px;border-radius:15px;box-shadow:0 8px 20px rgba(0,0,0,0.08);}";
+  html += ".label{font-size:14px;color:#888;}";
+  html += ".value{font-size:34px;font-weight:bold;margin-top:5px;}";
+  html += ".footer{text-align:center;margin-top:30px;color:#777;font-size:14px;}";
+  html += "</style>";
+  html += "</head>";
+
   html += "<body>";
-  html += "<h2>Air Quality Monitor</h2>";
-  
-  // Dynamic Content
-  html += "<h1 style='color:" + statusColor + ";'>" + currentStatus + "</h1>";
-  html += "<p class='value'>Gas Level: " + String(currentGas, 0) + "</p>";
-  html += "<p class='value'>Danger Confidence: " + String(currentProb * 100, 1) + "%</p>";
-  
-  html += "<p><em>Refreshing automatically...</em></p>";
-  html += "</body></html>";
-  
+  html += "<div class='container'>";
+  html += "<h1>🌍 Smart Air Quality Monitor</h1>";
+
+  html += "<div class='status' style='background:" + statusColor + ";'>";
+  html += currentStatus;
+  html += "</div>";
+
+  html += "<div class='grid'>";
+
+  html += "<div class='card'><div class='label'>🧪 Gas Level</div>";
+  html += "<div class='value'>" + String(currentGas, 0) + "</div></div>";
+
+  html += "<div class='card'><div class='label'>🌡 Temperature</div>";
+  html += "<div class='value'>" + String(dht.readTemperature(), 1) + " °C</div></div>";
+
+  html += "<div class='card'><div class='label'>💧 Humidity</div>";
+  html += "<div class='value'>" + String(dht.readHumidity(), 1) + " %</div></div>";
+
+  html += "<div class='card'><div class='label'>🧠 Danger Confidence</div>";
+  html += "<div class='value'>" + String(currentProb * 100, 1) + " %</div></div>";
+
+  html += "</div>";
+
+  html += "<div class='footer'>";
+  html += "Auto-refresh every 3 seconds • Edge AI Powered";
+  html += "</div>";
+
+  html += "</div></body></html>";
+
   server.send(200, "text/html", html);
 }
+
 
 void setup() {
     Serial.begin(115200);
